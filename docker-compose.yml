@@ -1,0 +1,77 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: csm_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: csm_clinic_dashboard
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - csm_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d csm_clinic_dashboard"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: csm_app
+    restart: always
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+      - POSTGRES_URL=postgres://postgres:postgres@postgres:5432/csm_clinic_dashboard
+      - AUTH_SECRET=your-auth-secret-here-change-in-production
+      - BASE_URL=http://localhost:3001
+      - POSTIZ_API_KEY=${POSTIZ_API_KEY}
+      - POSTIZ_BASE_URL=${POSTIZ_BASE_URL}
+      - BLOTATO_PROFILES_URL=${BLOTATO_PROFILES_URL}
+      - BLOTATO_API_KEY=${BLOTATO_API_KEY}
+      - N8N_SUBMIT_FORM_WEBHOOK=${N8N_SUBMIT_FORM_WEBHOOK}
+      - CSM_API_KEY=${CSM_API_KEY}
+      - PUBLIC_BASE_URL=http://localhost:3000
+      - NEXT_PUBLIC_BASE_URL=http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/public/uploads
+    networks:
+      - csm_network
+    command: >
+      sh -c "
+        echo 'Waiting for database to be ready...' &&
+        sleep 10 &&
+        echo 'Checking if database is already initialized...' &&
+        if [ ! -f /app/.db-initialized ]; then
+          echo 'First time setup - initializing database...' &&
+          npm run db:setup &&
+          npm run db:migrate &&
+          npm run db:seed &&
+          touch /app/.db-initialized &&
+          echo 'Database initialization completed.'
+        else
+          echo 'Database already initialized, skipping setup.'
+        fi &&
+        echo 'Starting application...' &&
+        node .next/standalone/server.js
+      "
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  csm_network:
+    driver: bridge

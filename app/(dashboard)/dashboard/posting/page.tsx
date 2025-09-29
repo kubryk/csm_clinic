@@ -216,10 +216,10 @@ export default function PostingPage() {
         }
 
         // Check file size based on media type
-        const maxSize = mediaType === 'image' ? 10 * 1024 * 1024 : 400 * 1024 * 1024; // 10MB for images, 400MB for videos
+        const maxSize = mediaType === 'image' ? 10 * 1024 * 1024 : 200 * 1024 * 1024; // 10MB for images, 200MB for videos
         const oversizedFiles = files.filter(file => file.size > maxSize);
         if (oversizedFiles.length > 0) {
-            const maxSizeText = mediaType === 'image' ? '10МБ' : '400МБ';
+            const maxSizeText = mediaType === 'image' ? '10МБ' : '200МБ';
             alert(`Файл занадто великий. Максимальний розмір: ${maxSizeText}`);
             return;
         }
@@ -267,7 +267,7 @@ export default function PostingPage() {
         const selectedTargetsData = filteredTargets.map(targetId => {
             const target = socialMediaTargets.find(t => t.id === targetId);
             return {
-                id: crypto.randomUUID(), // Унікальний ID для кожного таргета
+                id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
                 name: target?.name,
                 identifier: target?.identifier,
                 profile: target?.profile,
@@ -278,11 +278,11 @@ export default function PostingPage() {
             };
         });
 
-        // Create FormData for file upload
-        const formData = new FormData();
-
         // Check if we still have YouTube targets after filtering
         const hasYouTubeAfterFilter = selectedTargetsData.some(target => target.identifier === 'youtube');
+
+        // Create FormData for file upload
+        const formData = new FormData();
 
         // Add metadata as JSON string
         const metadata = {
@@ -311,8 +311,8 @@ export default function PostingPage() {
             const response = await fetch('/api/posting', {
                 method: 'POST',
                 body: formData,
-                // Add timeout for large files (15 minutes)
-                signal: AbortSignal.timeout(15 * 60 * 1000)
+                // Add timeout for large files (3 minutes)
+                signal: AbortSignal.timeout(3 * 60 * 1000)
             });
 
             if (response.ok) {
@@ -615,7 +615,7 @@ export default function PostingPage() {
                                 <p className="text-xs text-gray-500">
                                     {mediaType === 'image'
                                         ? 'PNG, JPG, GIF до 10МБ (до 10 файлів, тільки зображення)'
-                                        : 'MP4 до 400МБ (1 файл, тільки відео)'
+                                        : 'MP4 до 200МБ (1 файл, тільки відео)'
                                     }
                                 </p>
                             </div>

@@ -60,7 +60,7 @@ export async function getSocialMediaIntegrations(): Promise<SocialMediaResponse>
         // Process Postiz integrations
         if (postizResponse.status === 'fulfilled' && postizResponse.value.ok) {
             const postizData = await postizResponse.value.json();
-            console.log('Postiz Data received:', postizData);
+            // console.log('Postiz Data received:', postizData);
 
             const postizIntegrations: SocialMediaIntegration[] = postizData.map((item: any) => ({
                 id: `postiz-${item.id}`,
@@ -69,19 +69,22 @@ export async function getSocialMediaIntegrations(): Promise<SocialMediaResponse>
                 picture: item.picture,
                 disabled: item.disabled,
                 profile: item.profile,
-                customer: item.customer,
+                customer: item.customer ? {
+                    id: item.customer.name, // Use customer name as ID
+                    name: item.customer.name
+                } : undefined,
                 source: 'postiz' as const,
                 sourceId: item.id
             }));
 
-            console.log('Postiz Integrations transformed:', postizIntegrations);
+            // console.log('Postiz Integrations transformed:', postizIntegrations);
             allIntegrations = [...allIntegrations, ...postizIntegrations];
         }
 
         // Process N8N integrations
         if (n8nResponse.status === 'fulfilled' && n8nResponse.value.ok) {
             const n8nData = await n8nResponse.value.json();
-            console.log('N8N Data received:', n8nData);
+            // console.log('N8N Data received:', n8nData);
 
             // Handle both single object and array responses
             const n8nItems = Array.isArray(n8nData) ? n8nData : (n8nData ? [n8nData] : []);
@@ -95,14 +98,14 @@ export async function getSocialMediaIntegrations(): Promise<SocialMediaResponse>
                 disabled: false, // Assume all N8N integrations are active
                 profile: item.Профіль || '',
                 customer: item.Напрямок ? {
-                    id: `blotato-customer-${item.row_number || index}`,
+                    id: item.Напрямок, // Use direction name as ID
                     name: item.Напрямок
                 } : undefined,
                 source: 'blotato' as const,
                 sourceId: item.blotato_id || `row_${item.row_number || index}`
             }));
 
-            console.log('N8N Integrations transformed:', n8nIntegrations);
+            // console.log('N8N Integrations transformed:', n8nIntegrations);
             allIntegrations = [...allIntegrations, ...n8nIntegrations];
         }
 
@@ -122,7 +125,7 @@ export async function getSocialMediaIntegrations(): Promise<SocialMediaResponse>
             categories: [] // API doesn't seem to return categories, so we'll use an empty array
         };
 
-        console.log('Final combined integrations:', transformedData.integrations);
+        // console.log('Final combined integrations:', transformedData.integrations);
         return transformedData;
     } catch (error) {
         console.error('Error fetching social media integrations:', error);

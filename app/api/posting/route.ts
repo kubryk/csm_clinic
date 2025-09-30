@@ -36,7 +36,7 @@ async function saveFileToPublic(file: any): Promise<string> {
         console.log(`File verification - size: ${stats.size} bytes, exists: ${fs.existsSync(filePath)}`);
 
         // Return full public URL
-        const baseUrl = process.env.PUBLIC_BASE_URL || 'http://91.245.72.34:3000';
+        const baseUrl = process.env.BASE_URL || 'https://localhost:3000';
         const publicUrl = `${baseUrl}/api/uploads/${fileName}`;
         console.log(`File saved to: ${filePath}`);
         console.log(`Public URL: ${publicUrl}`);
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
 
                     // Import the Postiz route handler directly instead of making HTTP call
                     const { POST: postizHandler } = await import('./postiz/route');
-                    const postizRequest = new NextRequest('http://localhost:3000/api/posting/postiz', {
+                    const postizRequest = new NextRequest(`${process.env.BASE_URL}/api/posting/postiz`, {
                         method: 'POST',
                         body: postizFormData,
                     });
@@ -159,7 +159,7 @@ export async function POST(request: NextRequest) {
 
                     // Import the Blotato route handler directly instead of making HTTP call
                     const { POST: blotatoHandler } = await import('./blotato/route');
-                    const blotatoRequest = new NextRequest('http://localhost:3000/api/posting/blotato', {
+                    const blotatoRequest = new NextRequest(`${process.env.BASE_URL}/api/posting/blotato`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

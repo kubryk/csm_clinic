@@ -26,13 +26,13 @@ export async function getUser() {
   const user = await db
     .select()
     .from(users)
-    .where(and(eq(users.id, sessionData.user.id), isNull(users.deletedAt)))
+    .where(eq(users.id, sessionData.user.id))
     .limit(1);
 
   if (user.length === 0) {
     return null;
   }
-
+  // console.log('User:', user[0]);
   return user[0];
 }
 
@@ -100,4 +100,60 @@ export async function getTeamForUser() {
   });
 
   return result?.team || null;
+}
+
+export async function getAllUsers() {
+  return await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      role: users.role,
+      socialGroups: users.socialGroups,
+      createdAt: users.createdAt
+    })
+    .from(users)
+    .orderBy(desc(users.createdAt));
+}
+
+export async function createUser(userData: {
+  name: string;
+  email: string;
+  passwordHash: string;
+  role?: string;
+  socialGroups?: string[];
+}) {
+  const [newUser] = await db
+    .insert(users)
+    .values({
+      name: userData.name,
+      email: userData.email,
+      passwordHash: userData.passwordHash,
+      role: userData.role || 'member',
+      socialGroups: userData.socialGroups || []
+    })
+    .returning({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      role: users.role,
+      socialGroups: users.socialGroups,
+      createdAt: users.createdAt
+    });
+
+  return newUser;
+}
+
+export async function deleteUser(userId: number) {
+  // Hard delete - completely remove user from database
+  const [deletedUser] = await db
+    .delete(users)
+    .where(eq(users.id, userId))
+    .returning({
+      id: users.id,
+      name: users.name,
+      email: users.email
+    });
+
+  return deletedUser;
 }

@@ -15,8 +15,8 @@ export default function DashboardLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const navItems = [
-    // { href: '/dashboard', icon: Users, label: 'Team' },
-    // { href: '/dashboard/general', icon: Settings, label: 'General' },
+    { href: '/dashboard', icon: Users, label: 'Команда' },
+    { href: '/dashboard/general', icon: Settings, label: 'Загальне' },
     // { href: '/dashboard/calendar', icon: Calendar, label: 'Календар' },
     { href: '/dashboard/posting', icon: Newspaper, label: 'Постинг' },
     { href: '/dashboard/activity', icon: Activity, label: 'Активність' },

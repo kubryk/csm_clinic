@@ -28,8 +28,8 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
         </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
           {mode === 'signin'
-            ? 'Sign in to your account'
-            : 'Create your account'}
+            ? 'Увійти'
+            : 'Створити ваш обліковий запис'}
         </h2>
       </div>
 
@@ -43,7 +43,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              Email
+              Електронна пошта
             </Label>
             <div className="mt-1">
               <Input
@@ -55,7 +55,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 required
                 maxLength={50}
                 className="appearance-none rounded-full relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your email"
+                placeholder="Введіть вашу електронну пошту"
               />
             </div>
           </div>
@@ -65,7 +65,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
               htmlFor="password"
               className="block text-sm font-medium text-gray-700"
             >
-              Password
+              Пароль
             </Label>
             <div className="mt-1">
               <Input
@@ -80,7 +80,7 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
                 minLength={8}
                 maxLength={100}
                 className="appearance-none rounded-full relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your password"
+                placeholder="Введіть ваш пароль"
               />
             </div>
           </div>
@@ -98,12 +98,12 @@ export function Login({ mode = 'signin' }: { mode?: 'signin' | 'signup' }) {
               {pending ? (
                 <>
                   <Loader2 className="animate-spin mr-2 h-4 w-4" />
-                  Loading...
+                  Завантаження...
                 </>
               ) : mode === 'signin' ? (
-                'Sign in'
+                'Увійти'
               ) : (
-                'Sign up'
+                'Зареєструватися'
               )}
             </Button>
           </div>

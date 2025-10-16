@@ -11,7 +11,7 @@ services:
       - NODE_ENV=production
       - POSTGRES_URL=${POSTGRES_URL}
       - AUTH_SECRET=${AUTH_SECRET}
-      - BASE_URL=http://localhost:3000
+      - BASE_URL=http://91.245.72.34:3000
       - POSTIZ_API_KEY=${POSTIZ_API_KEY}
       - POSTIZ_BASE_URL=${POSTIZ_BASE_URL}
       - BLOTATO_PROFILES_URL=${BLOTATO_PROFILES_URL}

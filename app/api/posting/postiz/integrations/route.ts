@@ -40,6 +40,7 @@ export async function GET() {
         console.log(`Postiz integrations API success response:`, data);
         console.log(`Integrations count: ${Array.isArray(data) ? data.length : data.integrations?.length || 0}`);
 
+
         return NextResponse.json(data);
 
     } catch (error) {

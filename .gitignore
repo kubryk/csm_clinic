@@ -15,8 +15,7 @@
 
 # production
 /build
-/uploads
-/public/uploads
+
 
 # misc
 .DS_Store
@@ -43,3 +42,5 @@ postgres_data/
 .env*.local
 
 
+/uploads
+/public/uploads
